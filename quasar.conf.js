@@ -18,7 +18,16 @@ module.exports = function (ctx) {
       // 'fontawesome'
     ],
     supportIE: false,
-    build: {
+        build: {
+      env: ctx.dev
+        ? {
+          API_URL: JSON.stringify('http://localhost:8000/api'),
+          KEY_ECHO: JSON.stringify('e7e5543cd468d5f29c55')
+        }
+        : {
+          API_URL: JSON.stringify('http://localhost:8000/api'),
+          KEY_ECHO: JSON.stringify('e7e5543cd468d5f29c55')
+        },
       scopeHoisting: true,
       // vueRouterMode: 'history',
       // vueCompiler: true,
@@ -49,7 +58,14 @@ module.exports = function (ctx) {
         'QListHeader',
         'QItem',
         'QItemMain',
-        'QItemSide'
+        'QItemSide',
+        'QCard',
+        'QCardTitle',
+        'QCardMain',
+        'QCardMedia',
+        'QCardSeparator',
+        'QCardActions',
+        'QInput'
       ],
       directives: [
         'Ripple'

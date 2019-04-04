@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import example from './module-example'
+import login from './login'
 
 Vue.use(Vuex)
 
@@ -13,9 +13,14 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      example
+      login
     }
   })
-
+   if (process.env.DEV && module.hot) {
+    module.hot.accept(['./login'], () => {
+      const newLogin = require('./login').default
+      this.store.hotUpdate({ modules: { login: newLogin } })
+    })
+  }
   return Store
 }
