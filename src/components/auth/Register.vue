@@ -53,7 +53,7 @@ export default {
                         password : app.password,
                         confirm_password : app.confirm_pass
                     }
-                    const REGISTER_URL = process.env.API_URL + '/register/'
+                    const REGISTER_URL = process.env.API_URL + '/register'
                     axios.post(REGISTER_URL,credentials).then(function (response){
                         app.$store.commit('login/updatelogin', {token: response.data.token, user: response.data.user})
                         app.setAxiosHeaders(response.data.token)
