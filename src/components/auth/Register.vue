@@ -49,7 +49,7 @@ export default {
             var app = this
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
             console.log(this.$store.state.login.login)
-            app.$router.push('/main')
+            app.$router.push('/register-team')
         },
         Register ({commit}) {
            /* this.$v.form.$touch()
@@ -72,7 +72,7 @@ export default {
                         app.$store.commit('login/updatelogin', {token: response.data.token, user: response.data.user})
                         app.setAxiosHeaders(response.data.token)
                         Notify.create({
-                            message: 'Se agrego mozo correctamente',
+                            message: 'Se agrego Usuario correctamente',
                             type: 'positive',
                             position: 'center'
                         })
