@@ -2,6 +2,7 @@
     <div class="container-fluid">
         <Navbar></NavBar>
         <div class="row login">
+            <validation-errors :errors="validationErros" v-if="validationErros"></validation-errors>
             <div class="col-md-4">
                 <q-card >
                 <q-card-title class="title boxTitle">
@@ -21,6 +22,7 @@
     </div>    
 </template>
 <script>
+import ValidationErrors from '../utils/ValidationErrors.vue'
 import Navbar from './Navbar.vue'
 import { Notify } from 'quasar'
 import axios from 'axios'
@@ -32,11 +34,13 @@ export default {
             email: '',
             password: '',
             confirm_password: '',
-            access: ''
+            access: '',
+            validationErrors:''
         }
     },
     components: {
-        Navbar
+        Navbar,
+        ValidationErrors
     },
     validations: {
     form: {
@@ -68,28 +72,36 @@ export default {
                     }
                     const REGISTER_URL = process.env.API_URL + '/register'
                     axios.post(REGISTER_URL,credentials).then(function (response){
-                        console.log('llegue')
-                        app.$store.commit('login/updatelogin', {token: response.data.token, user: response.data.user})
-                        app.setAxiosHeaders(response.data.token)
-                        Notify.create({
-                            message: 'Se agrego Usuario correctamente',
-                            type: 'positive',
-                            position: 'center'
-                        })
+                        if(response.status == 200)
+                        {
+                            app.$store.commit('login/updatelogin', {token: response.data.token, user: response.data.user})
+                            app.setAxiosHeaders(response.data.token)
+                            Notify.create({
+                                message: 'Se agrego Usuario correctamente',
+                                type: 'positive',
+                                position: 'center'
+                            })
+                        }
                     }).catch(function (error){
-                        Notify.create({
-                            message:'Servidor no encontrado o Passwor y/o Contrasena incorrectas',
-                            type:'negative',
-                            position: 'center'
-                        })
+                        if (error.response )
+                        {
+                            if(error.response.status == 422){
+                                app.validationErrors = error.response.data.error;
+                            } else if(error.response.status == 401){
+                                Notify.create({
+                                    message:'A caducado la sesion',
+                                    position:'center',
+                                    type:'negative'
+                                })
+                            }
+                        } else {
+                            Notify.create({
+                                message:'Error de servidor',
+                                position:'center',
+                                type:'negative'
+                            })
+                        }
                     })
-                } else {
-                    Notify.create({
-                        message:'No coinciden los Password',
-                        type:'negative',
-                        position:'center'
-                    })
-                }
             } else {
                 Notify.create({
                     message: 'No deben quedar campos vacios',
@@ -97,8 +109,9 @@ export default {
                     position: 'center'
                 })
             }
+          }
         }
-    },
+    }
 }
 </script>
 <style>

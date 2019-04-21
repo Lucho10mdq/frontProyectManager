@@ -52,19 +52,26 @@ export default {
                     if(response.status == 200) {
                         app.$store.commit('login/updatelogin', {token: response.data.token, user: response.data.user})
                         app.setAxiosHeaders(response.data.token)
+                    } 
+                }).catch (function (error){
+                     if (error.response )
+                    {
+                        if(error.response.status == 422){
+                            app.validationErrors = error.response.data.error;
+                        } else if(error.response.status == 401){
+                            Notify.create({
+                                message:'A caducado la sesion',
+                                position:'center',
+                                type:'negative'
+                            })
+                        }
                     } else {
                         Notify.create({
-                            message: 'Password y/o Email incorrecto',
+                            message: 'Error en el servidor',
                             type: 'negative',
                             position: 'center'
                         })
-                    } 
-                }).catch (function (error){
-                    Notify.create({
-                        message: 'Ah ocurrido un error en el servidor',
-                        type: 'negative',
-                        position: 'center'
-                    })
+                    }
                 })
             } else {
                 Notify.create({
